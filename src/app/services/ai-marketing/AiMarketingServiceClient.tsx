@@ -181,8 +181,7 @@ export default function AiMarketingServiceClient() {
                       AI marketing automation
                     </p>
                     <p className="mt-2 text-sm leading-6 text-white/72">
-                      Premium listing videos, AI presenters, and weekly content output without a
-                      studio workflow.
+                      Premium listing videos, AI presenters, and weekly content output.
                     </p>
                   </div>
                   <div className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/74">
