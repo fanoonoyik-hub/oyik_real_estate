@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Clock, Tag, Share2, Twitter, Linkedin, Facebook } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Tag, Share2, Globe, Mail, Link as LinkIcon } from "lucide-react";
 import { getPostBySlug, allPosts } from "@/lib/blog-data";
 
 interface PageProps {
@@ -28,7 +28,8 @@ export async function generateStaticParams() {
 }
 
 export default function BlogPostPage({ params }: PageProps) {
-  const post = getPostBySlug(params.slug);
+  const decodedSlug = decodeURIComponent(params.slug).replace(/ /g, "-");
+  const post = getPostBySlug(decodedSlug);
 
   if (!post) {
     notFound();
@@ -110,7 +111,7 @@ export default function BlogPostPage({ params }: PageProps) {
             <div className="flex items-center gap-4">
               <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Share this post</span>
               <div className="flex gap-2">
-                {[Twitter, Linkedin, Facebook, Share2].map((Icon, i) => (
+                {[Globe, Mail, LinkIcon, Share2].map((Icon, i) => (
                   <button key={i} className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition-all hover:border-primary hover:text-primary hover:shadow-lg">
                     <Icon className="h-4 w-4" />
                   </button>
