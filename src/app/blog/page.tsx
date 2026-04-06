@@ -8,51 +8,9 @@ export const metadata: Metadata = {
   description: "Updates, launch notes, and real estate AI insights from oyik.realestate.ai.",
 };
 
+import { posts, featuredPost } from "@/lib/blog-data";
+
 const categories = ["All", "AI Strategy", "Automation", "Case Studies", "Product Updates"];
-
-const posts = [
-  {
-    title: "Why real estate teams are replacing slow follow-up with AI",
-    description:
-      "A quick look at how agencies are using AI to respond faster, qualify leads better, and keep viewings moving without losing the premium feel.",
-    category: "AI Strategy",
-    date: "May 12, 2026",
-    readTime: "5 min read",
-    image: "/media/blog/post1.png",
-    slug: "replacing-slow-follow-up-with-ai",
-  },
-  {
-    title: "The luxury real estate client journey needs instant response",
-    description:
-      "High-intent buyers and tenants expect immediate, polished communication. This post breaks down where speed matters most.",
-    category: "Automation",
-    date: "May 08, 2026",
-    readTime: "4 min read",
-    image: "/media/blog/post2.png",
-    slug: "luxury-client-journey-instant-response",
-  },
-  {
-    title: "What an AI operating layer actually does for an agency",
-    description:
-      "From calls and chat to reminders and maintenance intake, here is the practical side of a modern AI setup for property businesses.",
-    category: "Product Updates",
-    date: "May 02, 2026",
-    readTime: "6 min read",
-    image: "/media/blog/featured.png",
-    slug: "ai-operating-layer-for-agency",
-  },
-];
-
-const featuredPost = {
-  title: "The Future of Real Estate: How AI Agents are Transforming the UK Property Market",
-  description:
-    "Explore the shift from traditional lead management to fully automated AI operating layers. Learn how top-tier agencies are leveraging voice and chat agents to scale their operations while maintaining a boutique, high-end client experience.",
-  category: "AI Strategy",
-  date: "May 15, 2026",
-  readTime: "8 min read",
-  image: "/media/blog/featured.png",
-  slug: "future-of-real-estate-ai-agents",
-};
 
 export default function BlogPage() {
   return (
