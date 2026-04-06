@@ -139,8 +139,7 @@ export default function AiMarketingServiceClient() {
             <div className="space-y-5">
               <div className="h-px w-24 bg-[linear-gradient(90deg,#d9c08c,rgba(217,192,140,0.08))]" />
               <h1 className="max-w-4xl text-[2.8rem] font-display font-medium leading-[0.93] tracking-[-0.06em] text-slate-950 sm:text-[3.9rem] lg:text-[4.72rem]">
-                Premium listing content and AI presenters powered by AI marketing automation
-                &mdash; without the studio workflow.
+                Premium listing content and AI presenters powered by AI marketing automation.
               </h1>
               <p className="max-w-2xl text-[1.1rem] font-medium leading-8 text-slate-700 sm:text-[1.2rem] sm:leading-9">
                 Automate property videos, social media content, and listing promotion with AI
