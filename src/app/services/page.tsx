@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import InteractiveServices from "@/components/sections/InteractiveServices";
 
 export const metadata: Metadata = {
   title: "AI Services for Real Estate | oyik.realestate.ai",
@@ -155,70 +156,7 @@ export default function ServicesPage() {
       </section>
 
       <section className="bg-background py-10 sm:py-12 lg:py-14">
-        <div className="container mx-auto flex flex-col gap-16 px-4 sm:gap-20 sm:px-6 lg:gap-32 lg:px-8">
-          {services.map((service, idx) => (
-            <div
-              key={service.id}
-              className={`grid items-center gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-16 ${idx % 2 !== 0 ? "lg:[&>div:first-child]:order-last" : ""}`}
-            >
-              <div className="flex flex-col gap-6">
-                <div className="mb-1 inline-flex w-fit items-center rounded-full border border-border bg-secondary px-5 py-3 text-primary shadow-lg">
-                  <span className="font-display text-lg font-semibold uppercase tracking-[0.16em] text-foreground sm:text-xl">
-                    {service.title}
-                  </span>
-                </div>
-
-                <div className="relative overflow-hidden rounded-[2.05rem] border border-primary/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(245,248,255,0.76))] p-6 shadow-[0_30px_76px_-44px_rgba(15,23,42,0.2)] backdrop-blur-xl sm:p-8">
-                  <div className="absolute inset-x-6 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(63,55,184,0.28),transparent)]" />
-                  <div className="space-y-5">
-                    <p className="max-w-2xl text-[1.16rem] font-medium leading-8 text-slate-700 sm:text-[1.26rem] sm:leading-9">
-                      {service.lead}
-                    </p>
-                    <div className="h-px w-full bg-[linear-gradient(90deg,rgba(63,55,184,0.14),rgba(63,55,184,0.05),transparent)]" />
-                    <p className="text-[1.01rem] leading-8 text-slate-600 sm:text-[1.05rem]">
-                      {service.paragraphTwo}
-                    </p>
-                    <p className="text-[1.01rem] leading-8 text-slate-600 sm:text-[1.05rem]">
-                      {service.paragraphThree}
-                    </p>
-                  </div>
-                </div>
-
-                <Link
-                  href={`/services/${service.id}`}
-                  className="group mt-1 inline-flex w-full items-center justify-center gap-3 rounded-full bg-primary px-7 py-4 text-base font-semibold text-primary-foreground shadow-[0_16px_34px_-18px_rgba(67,56,202,0.65)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/92 hover:shadow-[0_20px_40px_-18px_rgba(67,56,202,0.72)] sm:w-fit"
-                >
-                  See full details
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/14 transition-transform duration-300 group-hover:translate-x-1">
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
-                </Link>
-              </div>
-
-              <div className="group relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl bg-card glass-card glow-border sm:aspect-[4/3]">
-                <div
-                  className="absolute inset-0 bg-cover bg-center opacity-[0.8] transition-transform duration-700 group-hover:scale-105"
-                  style={{ backgroundImage: `url(${service.image})` }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 z-10 rounded-2xl border border-border bg-background/60 p-6 shadow-2xl backdrop-blur-xl">
-                  <div className="mb-2 flex items-center gap-4">
-                    <div className="h-3 w-3 animate-pulse rounded-full bg-primary" />
-                    <div className="text-xs font-mono font-bold uppercase tracking-widest text-primary">
-                      Live Demo
-                    </div>
-                  </div>
-                  <p className="mb-3 text-lg font-display font-semibold text-foreground">
-                    {service.title}
-                  </p>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
-                    <div className="h-full w-2/3 animate-[pulse_2s_ease-in-out_infinite] bg-gradient-to-r from-primary to-accent" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <InteractiveServices services={services} />
       </section>
 
       <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f8f4eb_0%,#fbfaf7_36%,#f4f7fb_100%)] py-18 sm:py-22">
