@@ -1,79 +1,227 @@
-import Link from "next/link";
+import NextLink from "next/link";
 import type { Metadata } from "next";
+import { ArrowRight, Calendar, Clock, Tag } from "lucide-react";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Blog | oyik.realestate.ai",
   description: "Updates, launch notes, and real estate AI insights from oyik.realestate.ai.",
 };
 
+const categories = ["All", "AI Strategy", "Automation", "Case Studies", "Product Updates"];
+
 const posts = [
   {
     title: "Why real estate teams are replacing slow follow-up with AI",
     description:
       "A quick look at how agencies are using AI to respond faster, qualify leads better, and keep viewings moving without losing the premium feel.",
+    category: "AI Strategy",
+    date: "May 12, 2026",
+    readTime: "5 min read",
+    image: "/media/blog/post1.png",
+    slug: "replacing-slow-follow-up-with-ai",
   },
   {
     title: "The luxury real estate client journey needs instant response",
     description:
       "High-intent buyers and tenants expect immediate, polished communication. This post breaks down where speed matters most.",
+    category: "Automation",
+    date: "May 08, 2026",
+    readTime: "4 min read",
+    image: "/media/blog/post2.png",
+    slug: "luxury-client-journey-instant-response",
   },
   {
     title: "What an AI operating layer actually does for an agency",
     description:
       "From calls and chat to reminders and maintenance intake, here is the practical side of a modern AI setup for property businesses.",
+    category: "Product Updates",
+    date: "May 02, 2026",
+    readTime: "6 min read",
+    image: "/media/blog/featured.png",
+    slug: "ai-operating-layer-for-agency",
   },
 ];
 
+const featuredPost = {
+  title: "The Future of Real Estate: How AI Agents are Transforming the UK Property Market",
+  description:
+    "Explore the shift from traditional lead management to fully automated AI operating layers. Learn how top-tier agencies are leveraging voice and chat agents to scale their operations while maintaining a boutique, high-end client experience.",
+  category: "AI Strategy",
+  date: "May 15, 2026",
+  readTime: "8 min read",
+  image: "/media/blog/featured.png",
+  slug: "future-of-real-estate-ai-agents",
+};
+
 export default function BlogPage() {
   return (
-    <section className="relative overflow-hidden px-4 pb-20 pt-36 sm:px-6 lg:px-8">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(63,55,184,0.12),transparent_32%),linear-gradient(180deg,rgba(248,245,239,0.9),rgba(244,246,251,0.96))]" />
-      <div className="relative mx-auto max-w-6xl">
-        <div className="max-w-3xl">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.32em] text-primary/80">
+    <section className="relative overflow-hidden px-4 pb-24 pt-36 sm:px-6 lg:px-8">
+      {/* Background elements */}
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(63,55,184,0.12),transparent_38%),linear-gradient(180deg,rgba(248,245,239,0.95),rgba(244,246,251,0.98))]" />
+      
+      <div className="relative mx-auto max-w-7xl">
+        {/* Header Section */}
+        <div className="mb-16 max-w-3xl">
+          <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.24em] text-primary">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+            </span>
             Oyik Journal
           </p>
-          <h1 className="page-title">
-            Notes, launches, and ideas for modern real estate AI.
+          <h1 className="page-title text-slate-900">
+            Notes, <span className="text-primary italic">launches</span>, and ideas for modern real estate AI.
           </h1>
-          <p className="page-subtitle mt-6">
-            This local blog page is in place so the new header navigation works cleanly on localhost. We can turn it
-            into a full content hub whenever you want.
+          <p className="page-subtitle mt-6 text-slate-600">
+            Stay ahead of the curve with our latest insights on property automation, AI voice agents, and high-performance real estate operations.
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
-          {posts.map((post) => (
+        {/* Featured Post */}
+        <div className="group relative mb-20 overflow-hidden rounded-[2.5rem] border border-slate-200/60 bg-white/60 shadow-[0_32px_64px_-24px_rgba(63,55,184,0.12)] backdrop-blur-xl transition-all duration-500 hover:shadow-[0_45px_80px_-24px_rgba(63,55,184,0.18)]">
+          <div className="grid lg:grid-cols-2">
+            <div className="relative aspect-[16/10] overflow-hidden lg:aspect-auto">
+              <Image
+                src={featuredPost.image}
+                alt={featuredPost.title}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent lg:hidden" />
+              <div className="absolute left-6 top-6 rounded-full bg-primary px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white shadow-lg">
+                Featured Post
+              </div>
+            </div>
+            
+            <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
+              <div className="mb-6 flex flex-wrap gap-4 text-xs font-semibold text-slate-500">
+                <span className="flex items-center gap-1.5 text-primary">
+                  <Tag className="h-3.5 w-3.5" />
+                  {featuredPost.category}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5" />
+                  {featuredPost.date}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5" />
+                  {featuredPost.readTime}
+                </span>
+              </div>
+              
+              <h2 className="mb-6 font-display text-3xl font-medium leading-[1.1] tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+                {featuredPost.title}
+              </h2>
+              
+              <p className="mb-10 text-lg leading-relaxed text-slate-600">
+                {featuredPost.description}
+              </p>
+              
+              <NextLink
+                href={`/blog/${featuredPost.slug}`}
+                className="group/btn inline-flex items-center gap-3 self-start text-sm font-bold uppercase tracking-widest text-primary transition-all hover:gap-4"
+              >
+                Read Article
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover/btn:bg-primary group-hover/btn:text-white">
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </NextLink>
+            </div>
+          </div>
+        </div>
+
+        {/* Categories Section */}
+        <div className="mb-12 flex flex-wrap items-center gap-3">
+          {categories.map((cat, idx) => (
+            <button
+              key={cat}
+              className={`rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                idx === 0
+                  ? "bg-primary text-white shadow-lg shadow-primary/25"
+                  : "bg-white/80 text-slate-600 border border-slate-200 hover:border-primary hover:text-primary"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Blog Grid */}
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post, idx) => (
             <article
               key={post.title}
-              className="glass-card rounded-[2rem] p-7"
+              className="glass-card group flex flex-col items-start rounded-[2.2rem] p-4 transition-all duration-500 hover:-translate-y-2"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary/75">
-                Coming soon
-              </p>
-              <h2 className="mt-4 text-2xl font-display font-medium text-foreground">
-                {post.title}
-              </h2>
-              <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                {post.description}
-              </p>
+              <div className="relative mb-6 aspect-[16/10] w-full overflow-hidden rounded-[1.6rem] shadow-sm">
+                <Image
+                  src={post.image}
+                  alt={post.title}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest text-primary backdrop-blur-sm">
+                  {post.category}
+                </div>
+              </div>
+              
+              <div className="flex flex-1 flex-col px-3 pb-4">
+                <div className="mb-4 flex gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="h-3 w-3" />
+                    {post.date}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="h-3 w-3" />
+                    {post.readTime}
+                  </span>
+                </div>
+                
+                <h3 className="mb-4 font-display text-2xl font-medium tracking-tight text-slate-900 group-hover:text-primary transition-colors">
+                  {post.title}
+                </h3>
+                
+                <p className="mb-8 text-sm leading-relaxed text-slate-500 line-clamp-3">
+                  {post.description}
+                </p>
+                
+                <NextLink
+                  href={`/blog/${post.slug}`}
+                  className="mt-auto group/read inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary"
+                >
+                  Read More
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/read:translate-x-1" />
+                </NextLink>
+              </div>
             </article>
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center rounded-full bg-primary px-7 py-3 text-sm font-semibold text-white transition-transform duration-300 hover:-translate-y-0.5"
-          >
-            Back to home
-          </Link>
-          <a
-            href="tel:+447352328646"
-            className="inline-flex items-center justify-center rounded-full border border-border bg-white/80 px-7 py-3 text-sm font-semibold text-foreground transition-colors duration-300 hover:border-primary hover:text-primary"
-          >
-            Contact Us: +44 7352 328646
-          </a>
+        {/* CTA Section */}
+        <div className="mt-24 overflow-hidden rounded-[2.5rem] border border-primary/20 bg-primary/5 p-8 sm:p-14 lg:p-20">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="mb-6 font-display text-3xl font-medium leading-tight text-slate-900 sm:text-4xl lg:text-5xl">
+              Get the latest insights on <span className="text-primary italic">Real Estate AI</span> directly in your inbox.
+            </h2>
+            <p className="mb-10 text-lg text-slate-600">
+              Join 500+ forward-thinking agency directors who receive our weekly breakdown of property automation trends.
+            </p>
+            <form className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <input
+                type="email"
+                placeholder="Work email address"
+                className="w-full rounded-full border border-slate-200 bg-white px-8 py-4 text-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 sm:w-[320px]"
+              />
+              <button
+                type="submit"
+                className="rounded-full bg-primary px-10 py-4 text-sm font-bold uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/30"
+              >
+                Join the Journal
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </section>

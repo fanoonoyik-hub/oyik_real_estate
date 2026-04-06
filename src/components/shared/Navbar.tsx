@@ -17,7 +17,7 @@ const links: LinkItem[] = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/services", label: "Services" },
-  { href: "#", label: "Blog", disabled: true },
+  { href: "/blog", label: "Blog" },
 ];
 
 const phoneHref = "tel:+447352328646";
