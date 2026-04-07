@@ -19,20 +19,26 @@ const categories = ["All", "AI Strategy", "Automation", "Case Studies", "Product
 
 export const revalidate = 60; // Revalidate public blog list every 60s
 
-export default async function BlogPage() {
-  const { data: dbPosts } = await supabase
-    .from("blogs")
-    .select("*")
-    .order("created_at", { ascending: false });
+export default async function BlogPage(props: { searchParams: Promise<{ category?: string }> }) {
+  const searchParams = await props.searchParams;
+  const currentCategory = searchParams.category || "All";
 
+  let query = supabase.from("blogs").select("*").order("created_at", { ascending: false });
+  if (currentCategory !== "All") {
+    query = query.eq("category", currentCategory);
+  }
+
+  const { data: dbPosts } = await query;
   const posts = dbPosts || [];
+  
   let featuredPost = posts.find((p) => p.is_featured);
   
   if (!featuredPost && posts.length > 0) {
     featuredPost = posts[0]; // Fallback to newest
   }
 
-  const gridPosts = featuredPost ? posts.filter((p) => p.id !== featuredPost.id) : posts;
+  // The user explicitly requested to show the featured post in the main grid below as well
+  const gridPosts = posts;
   return (
     <section className="relative overflow-hidden px-4 pb-24 pt-36 sm:px-6 lg:px-8">
       {/* Background elements */}
@@ -114,18 +120,22 @@ export default async function BlogPage() {
 
         {/* Categories Section */}
         <div className="mb-12 flex flex-wrap items-center gap-3">
-          {categories.map((cat, idx) => (
-            <button
-              key={cat}
-              className={`rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
-                idx === 0
-                  ? "bg-primary text-white shadow-lg shadow-primary/25"
-                  : "bg-white/80 text-slate-600 border border-slate-200 hover:border-primary hover:text-primary"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isActive = currentCategory === cat;
+            return (
+              <NextLink
+                key={cat}
+                href={cat === "All" ? "/blog" : `/blog?category=${encodeURIComponent(cat)}`}
+                className={`rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                  isActive
+                    ? "bg-primary text-white shadow-lg shadow-primary/25"
+                    : "bg-white/80 text-slate-600 border border-slate-200 hover:border-primary hover:text-primary"
+                }`}
+              >
+                {cat}
+              </NextLink>
+            );
+          })}
         </div>
 
         {/* Blog Grid */}
