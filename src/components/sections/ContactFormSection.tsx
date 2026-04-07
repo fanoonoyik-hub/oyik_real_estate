@@ -19,22 +19,41 @@ export default function ContactFormSection() {
     router.prefetch("/thank-you");
   }, [router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const thankYouUrl = new URL("/thank-you", window.location.origin).toString();
-    const newTab = window.open("", "_blank");
+    const names = formData.name.trim().split(" ");
+    const first_name = names[0] || "Unknown";
+    const last_name = names.slice(1).join(" ") || "Unknown";
 
-    if (newTab) {
-      newTab.opener = null;
-      newTab.location.replace(thankYouUrl);
-    } else {
-      window.location.assign(thankYouUrl);
+    // Since the main table has no dedicated phone column, we append it to the message or company
+    const payload = {
+      first_name,
+      last_name,
+      email: formData.email,
+      company: formData.phone || "N/A", // Saving phone here
+      message: formData.message,
+    };
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        const thankYouUrl = new URL("/thank-you", window.location.origin).toString();
+        window.location.assign(thankYouUrl);
+      } else {
+        alert("Failed to send message. Please try again or email us directly at hello@oyik.ai.");
+      }
+    } catch (err) {
+      alert("Failed to send message. Please try again or email us directly at hello@oyik.ai.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setFormData({ name: "", email: "", phone: "", message: "" });
-    window.setTimeout(() => setIsSubmitting(false), 150);
   };
 
   return (
