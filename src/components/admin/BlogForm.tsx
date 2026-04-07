@@ -56,29 +56,40 @@ export default function BlogForm({ initialData, isEdit }: BlogFormProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setIsUploading(true);
-    setError(null);
-
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2, 15)}-${Date.now()}.${fileExt}`;
-    const filePath = `${fileName}`;
-
-    const { error: uploadError, data } = await supabase.storage
-      .from('blog-images')
-      .upload(filePath, file);
-
-    if (uploadError) {
-      setError(`Upload failed: ${uploadError.message}. Make sure you have a public 'blog-images' bucket created.`);
-      setIsUploading(false);
+    // Limit file size to 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image is too large. Please select an image under 5MB.");
       return;
     }
 
-    const { data: publicUrlData } = supabase.storage
-      .from('blog-images')
-      .getPublicUrl(filePath);
+    setIsUploading(true);
+    setError(null);
 
-    setFormData((prev) => ({ ...prev, image: publicUrlData.publicUrl }));
-    setIsUploading(false);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}-${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('blog-images')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        setError(`Upload failed: ${uploadError.message}. Make sure you have a public 'blog-images' bucket created in Supabase Storage.`);
+        setIsUploading(false);
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('blog-images')
+        .getPublicUrl(filePath);
+
+      setFormData((prev) => ({ ...prev, image: publicUrlData.publicUrl }));
+    } catch (err: any) {
+      setError(`Image upload error: ${err?.message || "Network error. Please check your internet connection and try again."}`);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleEditorChange = (html: string) => {
@@ -90,24 +101,27 @@ export default function BlogForm({ initialData, isEdit }: BlogFormProps) {
     setLoading(true);
     setError(null);
 
-    // If a blog is featured, we need to un-feature others in Supabase (simplified logic for now)
-    
-    let res;
-    if (isEdit) {
-      res = await supabase.from("blogs").update({
-        ...formData,
-        updated_at: new Date().toISOString()
-      }).eq("id", initialData.id);
-    } else {
-      res = await supabase.from("blogs").insert([formData]);
-    }
+    try {
+      let res;
+      if (isEdit) {
+        res = await supabase.from("blogs").update({
+          ...formData,
+          updated_at: new Date().toISOString()
+        }).eq("id", initialData.id);
+      } else {
+        res = await supabase.from("blogs").insert([formData]);
+      }
 
-    if (res.error) {
-      setError(res.error.message);
+      if (res.error) {
+        setError(res.error.message);
+        setLoading(false);
+      } else {
+        router.push("/admin/blogs");
+        router.refresh();
+      }
+    } catch (err: any) {
+      setError(`Publish error: ${err?.message || "Network error. Please check your connection and try again."}`);
       setLoading(false);
-    } else {
-      router.push("/admin/blogs");
-      router.refresh();
     }
   };
 
