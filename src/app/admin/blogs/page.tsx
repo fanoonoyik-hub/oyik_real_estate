@@ -4,10 +4,14 @@ import { Plus, Edit2, Trash2 } from "lucide-react";
 
 export default async function AdminBlogsPage() {
   const supabase = await createAdminClient();
-  const { data: blogs } = await supabase
+  const { data: blogs, error } = await supabase
     .from("blogs")
-    .select("id, title, category, date, created_at")
+    .select("id, title, category, created_at")
     .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching blogs:", error);
+  }
 
   return (
     <div>
