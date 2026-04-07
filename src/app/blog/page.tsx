@@ -17,18 +17,16 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const categories = ["All", "AI Strategy", "Automation", "Case Studies", "Product Updates"];
 
+import BlogGridClient from "./BlogGridClient";
+
 export const revalidate = 60; // Revalidate public blog list every 60s
 
-export default async function BlogPage(props: { searchParams: Promise<{ category?: string }> }) {
-  const searchParams = await props.searchParams;
-  const currentCategory = searchParams.category || "All";
+export default async function BlogPage() {
+  const { data: dbPosts } = await supabase
+    .from("blogs")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-  let query = supabase.from("blogs").select("*").order("created_at", { ascending: false });
-  if (currentCategory !== "All") {
-    query = query.eq("category", currentCategory);
-  }
-
-  const { data: dbPosts } = await query;
   const posts = dbPosts || [];
   
   let featuredPost = posts.find((p) => p.is_featured);
@@ -116,78 +114,7 @@ export default async function BlogPage(props: { searchParams: Promise<{ category
             </div>
           </div>
         </div>
-        )}
-
-        {/* Categories Section */}
-        <div className="mb-12 flex flex-wrap items-center gap-3">
-          {categories.map((cat) => {
-            const isActive = currentCategory === cat;
-            return (
-              <NextLink
-                key={cat}
-                href={cat === "All" ? "/blog" : `/blog?category=${encodeURIComponent(cat)}`}
-                className={`rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
-                  isActive
-                    ? "bg-primary text-white shadow-lg shadow-primary/25"
-                    : "bg-white/80 text-slate-600 border border-slate-200 hover:border-primary hover:text-primary"
-                }`}
-              >
-                {cat}
-              </NextLink>
-            );
-          })}
-        </div>
-
-        {/* Blog Grid */}
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {gridPosts.map((post: any) => (
-            <article
-              key={post.id}
-              className="glass-card group flex flex-col items-start rounded-[2.2rem] p-4 transition-all duration-500 hover:-translate-y-2"
-            >
-              <div className="relative mb-6 aspect-[16/10] w-full overflow-hidden rounded-[1.6rem] shadow-sm">
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest text-primary backdrop-blur-sm">
-                  {post.category}
-                </div>
-              </div>
-              
-              <div className="flex flex-1 flex-col px-3 pb-4">
-                <div className="mb-4 flex gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                  <span className="flex items-center gap-1.5">
-                    <Calendar className="h-3 w-3" />
-                    {post.date || new Date(post.created_at).toLocaleDateString()}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="h-3 w-3" />
-                    {post.read_time}
-                  </span>
-                </div>
-                
-                <h3 className="mb-4 font-display text-2xl font-medium tracking-tight text-slate-900 group-hover:text-primary transition-colors">
-                  {post.title}
-                </h3>
-                
-                <p className="mb-8 text-sm leading-relaxed text-slate-500 line-clamp-3">
-                  {post.description}
-                </p>
-                
-                <NextLink
-                  href={`/blog/${post.slug}`}
-                  className="mt-auto group/read inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary"
-                >
-                  Read More
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/read:translate-x-1" />
-                </NextLink>
-              </div>
-            </article>
-          ))}
-        </div>
+        <BlogGridClient initialPosts={posts} categories={categories} />
 
         {/* CTA Section */}
         <div className="mt-24 overflow-hidden rounded-[2.5rem] border border-primary/20 bg-primary/5 p-8 sm:p-14 lg:p-20">
