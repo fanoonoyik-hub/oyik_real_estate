@@ -6,13 +6,14 @@ import { ArrowLeft, Calendar, Clock, Tag, Share2, Globe, Mail, Link as LinkIcon 
 import { getPostBySlug, allPosts } from "@/lib/blog-data";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const post = getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
   if (!post) return { title: "Post Not Found" };
 
   return {
@@ -27,8 +28,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function BlogPostPage({ params }: PageProps) {
-  const decodedSlug = decodeURIComponent(params.slug).replace(/ /g, "-");
+export default async function BlogPostPage({ params }: PageProps) {
+  const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug).replace(/ /g, "-");
   const post = getPostBySlug(decodedSlug);
 
   if (!post) {
