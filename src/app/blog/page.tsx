@@ -113,7 +113,8 @@ export default async function BlogPage() {
               </NextLink>
             </div>
           </div>
-        </div>
+        {/* Featured Post ending JSX bracket */}
+        )}
         <BlogGridClient initialPosts={posts} categories={categories} />
 
         {/* CTA Section */}
