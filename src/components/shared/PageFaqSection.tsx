@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 type FaqItem = {
   question: string;
@@ -502,12 +503,34 @@ function resolveFaq(pathname: string): FaqContent {
 
 export default function PageFaqSection() {
   const pathname = usePathname() || "/";
-  const content = useMemo(() => resolveFaq(pathname), [pathname]);
+  const contentMap = useMemo(() => resolveFaq(pathname), [pathname]);
   const [openIndex, setOpenIndex] = useState(0);
+  const [faqs, setFaqs] = useState<FaqItem[]>([]);
+  const supabase = createClient();
 
   useEffect(() => {
     setOpenIndex(0);
-  }, [pathname]);
+    
+    // Fetch FAQs for this specific route
+    const fetchRouteFaqs = async () => {
+      const { data } = await supabase
+        .from("faqs")
+        .select("*")
+        .eq("page_route", pathname)
+        .order("sort_order", { ascending: true });
+        
+      if (data && data.length > 0) {
+        setFaqs(data);
+      } else {
+        // Fallback to the hardcoded items if none are found in the database yet
+        setFaqs(contentMap.items);
+      }
+    };
+    
+    fetchRouteFaqs();
+  }, [pathname, contentMap, supabase]);
+
+  if (!faqs.length) return null;
 
   return (
     <section className="relative overflow-hidden border-t border-slate-200/70 bg-[linear-gradient(180deg,#f8faff_0%,#eef3ff_100%)] py-20">
@@ -516,23 +539,23 @@ export default function PageFaqSection() {
       <div className="container relative mx-auto px-6 lg:px-10">
         <div className="mx-auto max-w-4xl">
           <div className="mb-10 text-center">
-            {content.eyebrow ? (
+            {contentMap.eyebrow ? (
               <p className="text-sm font-semibold uppercase tracking-[0.32em] text-indigo-600">
-                {content.eyebrow}
+                {contentMap.eyebrow}
               </p>
             ) : null}
             <h2 className="mt-4 text-4xl font-display font-medium tracking-[-0.04em] text-slate-950 sm:text-5xl">
               FAQ
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-slate-600 sm:text-xl">
-              {content.title}
+              {contentMap.title}
             </p>
           </div>
 
           <div className="mx-auto mb-10 h-px w-full max-w-2xl bg-[linear-gradient(90deg,transparent,rgba(79,70,229,0.24),transparent)]" />
 
           <div className="space-y-4">
-            {content.items.map((item, index) => {
+            {faqs.map((item, index) => {
               const isOpen = openIndex === index;
 
               return (
