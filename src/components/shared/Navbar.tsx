@@ -11,12 +11,25 @@ type LinkItem = {
   href: string;
   label: string;
   disabled?: boolean;
+  subLinks?: { href: string; label: string }[];
 };
 
 const links: LinkItem[] = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
-  { href: "/services", label: "Services" },
+  {
+    href: "/services",
+    label: "Services",
+    subLinks: [
+      { href: "/services/chat", label: "AI Chatbot" },
+      { href: "/services/voice", label: "Voice Agent" },
+      { href: "/services/reminders", label: "Reminders" },
+      { href: "/services/maintenance", label: "Maintenance" },
+      { href: "/services/email", label: "Email Automation" },
+      { href: "/services/ai-marketing", label: "AI Marketing" },
+      { href: "/services/workflow-automation", label: "Workflow Automation" },
+    ],
+  },
   { href: "/blog", label: "Blog" },
 ];
 
@@ -51,7 +64,7 @@ export default function Navbar() {
             scale: scrolled ? 0.992 : 1,
           }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className={`relative flex w-full items-center justify-between gap-2 overflow-hidden rounded-[1.75rem] border px-2.5 py-2 shadow-[0_16px_42px_-30px_rgba(15,23,42,0.22)] backdrop-blur-xl sm:gap-3 sm:px-3 lg:min-w-[860px] lg:rounded-full lg:px-4 ${
+          className={`relative flex w-full items-center justify-between gap-2 rounded-[1.75rem] border px-2.5 py-2 shadow-[0_16px_42px_-30px_rgba(15,23,42,0.22)] backdrop-blur-xl sm:gap-3 sm:px-3 lg:min-w-[860px] lg:rounded-full lg:px-4 ${
             scrolled ? "border-slate-900/10 bg-white/65" : "border-white/16 bg-slate-950/18"
           }`}
         >
@@ -109,21 +122,49 @@ export default function Navbar() {
               }
 
               return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`rounded-full px-5 py-2.5 text-[0.9rem] font-bold tracking-[0.08em] transition-all duration-300 ${
-                    isActive
-                      ? scrolled
-                        ? "bg-indigo-600 text-white shadow-lg"
-                        : "bg-white/20 text-white shadow-[0_4px_20px_rgba(255,255,255,0.25)]"
-                      : scrolled
-                        ? "text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800"
-                        : "text-white/95 hover:bg-white/15 hover:text-white drop-shadow-md"
-                  }`}
-                >
-                  {link.label}
-                </Link>
+                <div key={link.href} className="group relative">
+                  <Link
+                    href={link.href}
+                    className={`inline-block rounded-full px-5 py-2.5 text-[0.9rem] font-bold tracking-[0.08em] transition-all duration-300 ${
+                      isActive
+                        ? scrolled
+                          ? "bg-indigo-600 text-white shadow-lg"
+                          : "bg-white/20 text-white shadow-[0_4px_20px_rgba(255,255,255,0.25)]"
+                        : scrolled
+                          ? "text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800"
+                          : "text-white/95 hover:bg-white/15 hover:text-white drop-shadow-md"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                  {link.subLinks && (
+                    <div className="absolute left-0 top-full hidden w-56 pt-2 group-hover:block transition-all duration-300">
+                      <div
+                        className={`overflow-hidden rounded-2xl border p-2 shadow-[0_24px_54px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl ${
+                          scrolled ? "border-slate-900/10 bg-white/95" : "border-white/10 bg-[#1c2333]/95"
+                        }`}
+                      >
+                        {link.subLinks.map((subLink) => (
+                          <Link
+                            key={subLink.href}
+                            href={subLink.href}
+                            className={`block rounded-xl px-4 py-3 text-[0.88rem] font-medium transition-colors ${
+                              pathname === subLink.href
+                                ? scrolled
+                                  ? "bg-indigo-50 text-indigo-700"
+                                  : "bg-white/10 text-white"
+                                : scrolled
+                                  ? "text-slate-700 hover:bg-slate-50 hover:text-indigo-600"
+                                  : "text-white/70 hover:bg-white/5 hover:text-white"
+                            }`}
+                          >
+                            {subLink.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               );
             })}
 
@@ -176,22 +217,53 @@ export default function Navbar() {
                   }
 
                   return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className={`rounded-2xl px-4 py-3 text-sm font-medium uppercase tracking-[0.16em] transition-all ${
-                        isActive
-                          ? scrolled
-                            ? "bg-slate-900/8 text-slate-950 shadow-sm"
-                            : "bg-white/12 text-white shadow-sm"
-                          : scrolled
-                            ? "text-slate-700 hover:bg-slate-900/5 hover:text-slate-950"
-                            : "text-white/78 hover:bg-white/8 hover:text-white"
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
+                    <div key={link.href} className="flex flex-col">
+                      <Link
+                        href={link.href}
+                        onClick={() => {
+                          if (!link.subLinks) {
+                            setIsOpen(false);
+                          }
+                        }}
+                        className={`rounded-2xl px-4 py-3 text-sm font-medium uppercase tracking-[0.16em] transition-all ${
+                          isActive
+                            ? scrolled
+                              ? "bg-slate-900/8 text-slate-950 shadow-sm"
+                              : "bg-white/12 text-white shadow-sm"
+                            : scrolled
+                              ? "text-slate-700 hover:bg-slate-900/5 hover:text-slate-950"
+                              : "text-white/78 hover:bg-white/8 hover:text-white"
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                      
+                      {link.subLinks && (
+                        <div className="ml-4 mt-1 grid gap-1 border-l-2 border-slate-500/20 pl-4">
+                          {link.subLinks.map((subLink) => {
+                            const isSubActive = pathname === subLink.href;
+                            return (
+                              <Link
+                                key={subLink.href}
+                                href={subLink.href}
+                                onClick={() => setIsOpen(false)}
+                                className={`rounded-xl px-4 py-3 text-[0.8rem] font-semibold tracking-[0.08em] transition-all ${
+                                  isSubActive
+                                    ? scrolled
+                                      ? "text-indigo-700"
+                                      : "text-white"
+                                    : scrolled
+                                      ? "text-slate-600 hover:text-indigo-600"
+                                      : "text-white/60 hover:text-white"
+                                }`}
+                              >
+                                {subLink.label}
+                              </Link>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
