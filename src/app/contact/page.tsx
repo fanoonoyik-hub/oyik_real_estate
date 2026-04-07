@@ -24,17 +24,45 @@ export default function ContactPage() {
   const [activeTab, setActiveTab] = useState<"form" | "demo">("demo");
   const [form, setForm] = useState<ContactForm>(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const updateField = (field: keyof ContactForm, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
-    setForm(initialForm);
-  };
+    setIsSubmitting(true);
+    setErrorMsg("");
 
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: form.firstName,
+          last_name: form.lastName,
+          email: form.email,
+          company: form.company,
+          message: form.message,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit");
+      }
+
+      setSubmitted(true);
+      setForm(initialForm);
+    } catch (err: any) {
+      setErrorMsg("Failed to submit form. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <div className="min-h-screen bg-background pt-32 pb-24 relative overflow-hidden">
       <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
@@ -153,8 +181,13 @@ export default function ContactPage() {
                         <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-emerald-800 flex items-start gap-3">
                           <CheckCircle2 className="w-5 h-5 mt-0.5 shrink-0" />
                           <p className="text-sm leading-relaxed">
-                            Your request was captured successfully. The live backend form is not connected yet, so use the demo tab for instant booking or wire this form to your inbox next.
+                            Your request was captured successfully. We will get back to you shortly.
                           </p>
+                        </div>
+                      )}
+                      {errorMsg && (
+                        <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-800 flex items-start gap-3">
+                          <p className="text-sm leading-relaxed">{errorMsg}</p>
                         </div>
                       )}
 
@@ -188,9 +221,9 @@ export default function ContactPage() {
                           <textarea rows={4} value={form.message} onChange={(event) => updateField("message", event.target.value)} className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:border-primary transition-colors text-foreground resize-none" placeholder="Tell us about your enquiry flow, lead volume, or calendar setup..." required />
                         </div>
 
-                        <button type="submit" className="w-full mt-4 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-primary/90 transition-all shadow-lg flex items-center justify-center gap-2">
-                          Submit Request
-                          <ArrowRight className="w-5 h-5" />
+                        <button type="submit" disabled={isSubmitting} className="w-full mt-4 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-primary/90 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-75">
+                          {isSubmitting ? "Submitting..." : "Submit Request"}
+                          {!isSubmitting && <ArrowRight className="w-5 h-5" />}
                         </button>
                       </form>
                     </motion.div>

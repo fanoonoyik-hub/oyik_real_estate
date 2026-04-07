@@ -3,7 +3,12 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, Tag, Share2, Globe, Mail, Link as LinkIcon } from "lucide-react";
-import { getPostBySlug, allPosts } from "@/lib/blog-data";
+import SafeHtml from "@/components/shared/SafeHtml";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface PageProps {
   params: Promise<{
@@ -13,7 +18,14 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const decodedSlug = decodeURIComponent(slug).replace(/ /g, "-");
+  
+  const { data: post } = await supabase
+    .from("blogs")
+    .select("title, description")
+    .eq("slug", decodedSlug)
+    .single();
+
   if (!post) return { title: "Post Not Found" };
 
   return {
@@ -23,7 +35,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  return allPosts.map((post) => ({
+  const { data: posts } = await supabase.from("blogs").select("slug");
+  if (!posts) return [];
+  
+  return posts.map((post) => ({
     slug: post.slug,
   }));
 }
@@ -31,7 +46,12 @@ export async function generateStaticParams() {
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug).replace(/ /g, "-");
-  const post = getPostBySlug(decodedSlug);
+  
+  const { data: post } = await supabase
+    .from("blogs")
+    .select("*")
+    .eq("slug", decodedSlug)
+    .single();
 
   if (!post) {
     notFound();
@@ -61,11 +81,11 @@ export default async function BlogPostPage({ params }: PageProps) {
             </span>
             <span className="flex items-center gap-1.5">
               <Calendar className="h-3.5 w-3.5" />
-              {post.date}
+              {post.date || new Date(post.created_at).toLocaleDateString()}
             </span>
             <span className="flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5" />
-              {post.readTime}
+              {post.read_time}
             </span>
           </div>
 
@@ -101,10 +121,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         {/* Article Content */}
         <div className="prose prose-slate prose-lg mx-auto max-w-none prose-headings:font-display prose-headings:font-medium prose-headings:tracking-tight prose-a:text-primary prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-2xl prose-img:rounded-[2rem]">
-          <div
-            dangerouslySetInnerHTML={{ __html: post.content || "" }}
-            className="article-content space-y-6 text-slate-700"
-          />
+          <SafeHtml html={post.content || ""} className="article-content space-y-6 text-slate-700" />
         </div>
 
         {/* Footer / Share */}

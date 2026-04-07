@@ -18,7 +18,7 @@ export default function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
-  const showSiteChrome = !CHROMELESS_PATHS.has(pathname);
+  const showSiteChrome = !CHROMELESS_PATHS.has(pathname) && !pathname.startsWith("/admin");
 
   useEffect(() => {
     const resetScroll = () => {

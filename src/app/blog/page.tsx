@@ -8,11 +8,31 @@ export const metadata: Metadata = {
   description: "Updates, launch notes, and real estate AI insights from oyik.realestate.ai.",
 };
 
-import { posts, featuredPost } from "@/lib/blog-data";
+import { createClient } from "@supabase/supabase-js";
+
+// Initialize standard Supabase client for public fetches
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const categories = ["All", "AI Strategy", "Automation", "Case Studies", "Product Updates"];
 
-export default function BlogPage() {
+export const revalidate = 60; // Revalidate public blog list every 60s
+
+export default async function BlogPage() {
+  const { data: dbPosts } = await supabase
+    .from("blogs")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const posts = dbPosts || [];
+  let featuredPost = posts.find((p) => p.is_featured);
+  
+  if (!featuredPost && posts.length > 0) {
+    featuredPost = posts[0]; // Fallback to newest
+  }
+
+  const gridPosts = featuredPost ? posts.filter((p) => p.id !== featuredPost.id) : posts;
   return (
     <section className="relative overflow-hidden px-4 pb-24 pt-36 sm:px-6 lg:px-8">
       {/* Background elements */}
@@ -37,6 +57,7 @@ export default function BlogPage() {
         </div>
 
         {/* Featured Post */}
+        {featuredPost && (
         <div className="group relative mb-20 overflow-hidden rounded-[2.5rem] border border-slate-200/60 bg-white/60 shadow-[0_32px_64px_-24px_rgba(63,55,184,0.12)] backdrop-blur-xl transition-all duration-500 hover:shadow-[0_45px_80px_-24px_rgba(63,55,184,0.18)]">
           <div className="grid lg:grid-cols-2">
             <div className="relative aspect-[16/10] overflow-hidden lg:aspect-auto">
@@ -89,6 +110,7 @@ export default function BlogPage() {
             </div>
           </div>
         </div>
+        )}
 
         {/* Categories Section */}
         <div className="mb-12 flex flex-wrap items-center gap-3">
@@ -108,9 +130,9 @@ export default function BlogPage() {
 
         {/* Blog Grid */}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post, idx) => (
+          {gridPosts.map((post: any) => (
             <article
-              key={post.title}
+              key={post.id}
               className="glass-card group flex flex-col items-start rounded-[2.2rem] p-4 transition-all duration-500 hover:-translate-y-2"
             >
               <div className="relative mb-6 aspect-[16/10] w-full overflow-hidden rounded-[1.6rem] shadow-sm">
@@ -129,11 +151,11 @@ export default function BlogPage() {
                 <div className="mb-4 flex gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-3 w-3" />
-                    {post.date}
+                    {post.date || new Date(post.created_at).toLocaleDateString()}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="h-3 w-3" />
-                    {post.readTime}
+                    {post.read_time}
                   </span>
                 </div>
                 
