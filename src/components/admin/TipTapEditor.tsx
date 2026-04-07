@@ -110,6 +110,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
 
 export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         heading: false, // We customize heading below
