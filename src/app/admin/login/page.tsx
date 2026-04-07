@@ -51,13 +51,13 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Email Address</label>
+            <label className="text-sm font-medium text-foreground">User ID</label>
             <input
-              type="email"
+              type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:border-primary transition-colors"
-              placeholder="admin@oyikrealestate.ai"
+              placeholder="Enter user id"
               required
             />
           </div>
@@ -69,7 +69,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:border-primary transition-colors"
-              placeholder="••••••••"
+              placeholder="Enter password"
               required
             />
           </div>
