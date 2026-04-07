@@ -29,7 +29,6 @@ export default function BlogForm({ initialData, isEdit }: BlogFormProps) {
     author: initialData?.author || "Oyik AI Lab",
     read_time: initialData?.read_time || "5 min read",
     content: initialData?.content || "",
-    date: initialData?.date || new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
     is_featured: initialData?.is_featured || false,
   });
 
@@ -273,18 +272,6 @@ export default function BlogForm({ initialData, isEdit }: BlogFormProps) {
                 />
                 {isUploading && <span className="text-sm text-slate-500 animate-pulse">Uploading...</span>}
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Publish Date</label>
-              <input
-                type="text"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-primary transition-colors text-slate-900"
-                placeholder="Jan 01, 2026"
-              />
             </div>
             
             <div className="space-y-2 md:col-span-2 p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
