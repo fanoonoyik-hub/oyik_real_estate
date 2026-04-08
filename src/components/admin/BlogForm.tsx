@@ -30,6 +30,14 @@ export default function BlogForm({ initialData, isEdit }: BlogFormProps) {
     read_time: initialData?.read_time || "5 min read",
     content: initialData?.content || "",
     is_featured: initialData?.is_featured || false,
+    faqs: initialData?.faqs || [],
+  });
+
+  const [showFaqFields, setShowFaqFields] = useState(initialData?.faqs?.length > 0 || false);
+  const [blogFaqs, setBlogFaqs] = useState<{ question: string; answer: string }[]>(() => {
+    const existing = initialData?.faqs || [];
+    const emptyFields = Array(Math.max(0, 5 - existing.length)).fill({ question: "", answer: "" });
+    return [...existing, ...emptyFields].slice(0, 5);
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -96,20 +104,31 @@ export default function BlogForm({ initialData, isEdit }: BlogFormProps) {
     setFormData((prev) => ({ ...prev, content: html }));
   };
 
+  const handleFaqChange = (index: number, field: "question" | "answer", value: string) => {
+    const updated = [...blogFaqs];
+    updated[index] = { ...updated[index], [field]: value };
+    setBlogFaqs(updated);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
+      const submissionData = {
+        ...formData,
+        faqs: showFaqFields ? blogFaqs.filter(f => f.question.trim() !== "") : [],
+      };
+
       let res;
       if (isEdit) {
         res = await supabase.from("blogs").update({
-          ...formData,
+          ...submissionData,
           updated_at: new Date().toISOString()
         }).eq("id", initialData.id);
       } else {
-        res = await supabase.from("blogs").insert([formData]);
+        res = await supabase.from("blogs").insert([submissionData]);
       }
 
       if (res.error) {
@@ -288,18 +307,73 @@ export default function BlogForm({ initialData, isEdit }: BlogFormProps) {
               </div>
             </div>
             
-            <div className="space-y-2 md:col-span-2 p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="is_featured"
-                checked={formData.is_featured}
-                onChange={handleCheckbox}
-                className="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary"
-              />
-              <label htmlFor="is_featured" className="text-sm font-medium text-slate-700 cursor-pointer">
-                Mark as Featured Post (shows large at the top of the blog index)
-              </label>
+            <div className="space-y-2 md:col-span-2 p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="is_featured"
+                  checked={formData.is_featured}
+                  onChange={handleCheckbox}
+                  className="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary"
+                />
+                <label htmlFor="is_featured" className="text-sm font-medium text-slate-700 cursor-pointer">
+                  Mark as Featured Post
+                </label>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <label className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Enable Blog FAQs</label>
+                <button
+                  type="button"
+                  onClick={() => setShowFaqFields(!showFaqFields)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                    showFaqFields ? 'bg-primary' : 'bg-slate-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      showFaqFields ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
+
+            {/* Dynamic FAQ Fields */}
+            {showFaqFields && (
+              <div className="space-y-6 md:col-span-2 p-6 bg-slate-50 rounded-[2rem] border border-primary/10 transition-all">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-slate-900">Blog FAQ Section</h3>
+                  <p className="text-xs font-medium text-slate-500">Add up to 5 questions</p>
+                </div>
+                
+                <div className="space-y-4">
+                  {blogFaqs.map((faq, index) => (
+                    <div key={index} className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
+                          0{index + 1}
+                        </span>
+                        <input
+                          type="text"
+                          placeholder="Enter Question..."
+                          value={faq.question}
+                          onChange={(e) => handleFaqChange(index, "question", e.target.value)}
+                          className="flex-1 bg-transparent border-none focus:ring-0 text-sm font-semibold text-slate-900 placeholder:text-slate-400 p-0"
+                        />
+                      </div>
+                      <textarea
+                        placeholder="Enter Answer..."
+                        value={faq.answer}
+                        onChange={(e) => handleFaqChange(index, "answer", e.target.value)}
+                        rows={2}
+                        className="w-full bg-slate-50/50 border-none rounded-xl focus:ring-0 text-sm text-slate-600 placeholder:text-slate-400 p-3 resize-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </form>
       </div>

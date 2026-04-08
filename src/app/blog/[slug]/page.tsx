@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, Tag, Share2, Globe, Mail, Link as LinkIcon } from "lucide-react";
 import SafeHtml from "@/components/shared/SafeHtml";
+import BlogFaqSection from "@/components/shared/BlogFaqSection";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -123,6 +124,11 @@ export default async function BlogPostPage({ params }: PageProps) {
         <div className="prose prose-slate prose-lg mx-auto max-w-none prose-headings:font-display prose-headings:font-medium prose-headings:tracking-tight prose-a:text-primary prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-2xl prose-img:rounded-[2rem]">
           <SafeHtml html={post.content || ""} className="article-content space-y-6 text-slate-700" />
         </div>
+
+        {/* Blog Specific FAQs */}
+        {post.faqs && post.faqs.length > 0 && (
+          <BlogFaqSection faqs={post.faqs} />
+        )}
 
         {/* Footer / Share */}
         <footer className="mt-20 border-t border-slate-200 pt-10">
