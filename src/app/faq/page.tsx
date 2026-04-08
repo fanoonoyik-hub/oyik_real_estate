@@ -20,6 +20,7 @@ export default async function FAQPage() {
   const { data: dbFaqs } = await supabase
     .from("faqs")
     .select("*")
+    .eq("page_route", "/faq")
     .order("sort_order", { ascending: true });
     
   const faqs = dbFaqs || [];
