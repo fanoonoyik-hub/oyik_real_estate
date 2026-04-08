@@ -156,6 +156,9 @@ export default function AdminFaqPage() {
                   <option value="/">Home Page (/)</option>
                   <option value="/about">About Page (/about)</option>
                   <option value="/blog">Blog Page (/blog)</option>
+                  <option value="/contact">Contact Page (/contact)</option>
+                  <option value="/book-demo">Book Demo Page (/book-demo)</option>
+                  <option value="/how-it-works">How It Works (/how-it-works)</option>
                   <option value="/services">Services Overview (/services)</option>
                   <option value="/services/voice">Voice Service (/services/voice)</option>
                   <option value="/services/chat">Chat Service (/services/chat)</option>
@@ -164,6 +167,10 @@ export default function AdminFaqPage() {
                   <option value="/services/maintenance">Maintenance Service (/services/maintenance)</option>
                   <option value="/services/ai-marketing">AI Marketing (/services/ai-marketing)</option>
                   <option value="/services/workflow-automation">Workflow Automation (/services/workflow-automation)</option>
+                  <option value="/privacy">Privacy Policy (/privacy)</option>
+                  <option value="/terms">Terms of Service (/terms)</option>
+                  <option value="/cookies">Cookie Policy (/cookies)</option>
+                  <option value="/thank-you">Thank You Page (/thank-you)</option>
                 </select>
               </div>
             </div>
