@@ -4,6 +4,69 @@ import Link from "next/link";
 import Image from "next/image";
 import { Mail, MapPin, Phone } from "lucide-react";
 
+const socialLinks = [
+  { 
+    name: "Instagram", 
+    href: "https://www.instagram.com/oyik.realestate.ai/", 
+    icon: (props: any) => (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+      </svg>
+    ),
+    color: "hover:text-[#E4405F] hover:bg-[#E4405F]/10 hover:border-[#E4405F]/20"
+  },
+  { 
+    name: "Facebook", 
+    href: "https://www.facebook.com/share/1aPbEdmbCq/?mibextid=wwXIfr", 
+    icon: (props: any) => (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+      </svg>
+    ),
+    color: "hover:text-[#1877F2] hover:bg-[#1877F2]/10 hover:border-[#1877F2]/20"
+  },
+  { 
+    name: "LinkedIn", 
+    href: "https://www.linkedin.com/company/oyik-realestate-ai/", 
+    icon: (props: any) => (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+      </svg>
+    ),
+    color: "hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/20"
+  },
+  { 
+    name: "X", 
+    href: "https://x.com/oyik_realestate", 
+    icon: (props: any) => (
+      <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.49h2.039L6.486 3.24H4.298l13.311 17.403z"/>
+      </svg>
+    ),
+    color: "hover:text-[#000000] hover:bg-[#000000]/10 hover:border-[#000000]/20"
+  },
+  { 
+    name: "YouTube", 
+    href: "https://www.youtube.com/@oyikrealestate", 
+    icon: (props: any) => (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.14 1 12 1 12s0 3.86.46 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.86 23 12 23 12s0-3.86-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
+      </svg>
+    ),
+    color: "hover:text-[#FF0000] hover:bg-[#FF0000]/10 hover:border-[#FF0000]/20"
+  },
+  { 
+    name: "Snapchat", 
+    href: "https://www.snapchat.com/@realestate.ai", 
+    icon: (props: any) => (
+      <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <path d="M12 2.1c-2.4 0-4.1 1.7-4.1 4.1 0 .6.1 1.1.3 1.6-.8.4-1.3 1.3-1.3 2.2 0 .9.5 1.7 1.3 2.1-.1.3-.2.6-.2.9 0 2 1.8 3.5 4 3.5s4-1.5 4-3.5c0-.3-.1-.6-.2-.9.8-.4 1.3-1.2 1.3-2.1 0-.9-.5-1.8-1.3-2.2.2-.5.3-1.1.3-1.6 0-2.4-1.7-4.1-4.1-4.1zm0 1.5c1.4 0 2.6 1.2 2.6 2.6 0 .4-.1.8-.3 1.2l-.1.3.3.1c.6.3.9.9.9 1.5 0 .6-.3 1.2-.8 1.5l-.4.2.1.4s0 .1.1.1c.1.2.1.3.1.5 0 1.1-1.1 2-2.4 2s-2.4-.9-2.4-2c0-.2 0-.3.1-.5l.1-.1.1-.4-.4-.2c-.5-.3-.8-.9-.8-1.5 0-.6.3-1.2.9-1.5l.3-.1-.1-.3c-.2-.4-.3-.8-.3-1.2-.1-1.4 1.1-2.6 2.5-2.6zM4.1 18c-.8 0-1.5.5-1.5 1.5 0 1 1 2 2.5 3 2.5 1.5 5.1 2 6.9 2 1.8 0 4.4-.5 6.9-2 1.5-1 2.5-2 2.5-3 0-1-.7-1.5-1.5-1.5-.7 0-1.3.4-1.8.9l-.6.6c-1.2 1.1-3 1.7-5 1.7s-3.8-.6-5-1.7l-.6-.6c-.5-.5-1.1-.9-1.8-.9z"/>
+      </svg>
+    ),
+    color: "hover:text-[#FFFC00] hover:bg-[#FFFC00]/10 hover:border-[#FFFC00]/20"
+  },
+];
+
 const serviceLinks = [
   { name: "AI Chatbots", href: "/services/chat" },
   { name: "Voice Agents", href: "/services/voice" },
@@ -58,6 +121,21 @@ export default function Footer() {
               The intelligence layer for modern real estate teams. Reply instantly, qualify leads,
               and book viewings across chat, voice, email, and social.
             </p>
+
+            <div className="flex flex-wrap gap-3">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background/50 text-muted-foreground transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${social.color}`}
+                  aria-label={social.name}
+                >
+                  <social.icon size={18} />
+                </a>
+              ))}
+            </div>
 
             <div className="rounded-[1.7rem] border border-border bg-background/80 p-5 shadow-[0_20px_40px_-32px_rgba(15,23,42,0.18)]">
               <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-primary">
