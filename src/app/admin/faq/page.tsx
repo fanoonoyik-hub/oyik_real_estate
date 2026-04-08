@@ -155,6 +155,7 @@ export default function AdminFaqPage() {
                   <option value="/faq">General FAQ Page (/faq)</option>
                   <option value="/">Home Page (/)</option>
                   <option value="/about">About Page (/about)</option>
+                  <option value="/blog">Blog Page (/blog)</option>
                   <option value="/services">Services Overview (/services)</option>
                   <option value="/services/voice">Voice Service (/services/voice)</option>
                   <option value="/services/chat">Chat Service (/services/chat)</option>
