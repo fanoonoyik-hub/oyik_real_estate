@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     siteName: "oyik.realestate.ai",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "oyik.realestate.ai luxury real estate AI automation website",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     description:
       "Premium AI systems for real estate businesses that want faster lead response, better qualification, and more booked viewings.",
     creator: "@oyikai",
-    images: ["/og-image.jpg"],
+    images: ["/og-image.png"],
   },
 };
 
