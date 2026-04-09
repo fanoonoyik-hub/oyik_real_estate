@@ -82,7 +82,7 @@ export default function Footer() {
         <img 
           src="/snapchat-custom.png" 
           alt="Snapchat icon" 
-          style={{ width: size * 2.2, height: size * 2.2 }}
+          style={{ width: size * 2.4, height: size * 2.4 }}
           className="object-contain max-w-none"
           {...props}
         />
