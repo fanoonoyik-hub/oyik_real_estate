@@ -58,12 +58,16 @@ const socialLinks = [
   { 
     name: "Snapchat", 
     href: "https://www.snapchat.com/@realestate.ai", 
-    icon: (props: any) => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="M12 2.762c-2.451 0-4.417 1.956-4.417 4.387 0 .42.063.823.181 1.201-.219.124-.482.327-.723.633-.655.823-.846 1.849-.846 2.77 0 .584.148 1.107.411 1.503-.021.085-.03.176-.03.268 0 .584.444.975.992 1.346.012 1.144.373 2.146 1.144 2.809.77.663 1.951 1.045 3.288 1.045 1.339 0 2.522-.382 3.292-1.045.772-.663 1.135-1.665 1.146-2.809.549-.371.993-.762.993-1.346 0-.092-.009-.183-.031-.268.263-.396.413-.919.413-1.503 0-.921-.192-1.947-.847-2.77-.24-.306-.503-.509-.724-.633.118-.378.181-.781.181-1.201 0-2.431-1.967-4.387-4.42-4.387z" />
-      </svg>
+    icon: ({ size, ...props }: any) => (
+      <img 
+        src="/snapchat-custom.png" 
+        alt="Snapchat icon" 
+        style={{ width: size, height: size }}
+        className="object-contain"
+        {...props}
+      />
     ),
-    color: "hover:text-[#FFFC00] hover:bg-[#FFFC00]/10 hover:border-[#FFFC00]/20"
+    color: "hover:bg-white/10 hover:border-border/40"
   },
 ];
 
