@@ -62,8 +62,8 @@ const socialLinks = [
       <img 
         src="/snapchat-custom.png" 
         alt="Snapchat icon" 
-        style={{ width: size, height: size }}
-        className="object-contain"
+        style={{ width: size * 2.2, height: size * 2.2 }}
+        className="object-contain max-w-none"
         {...props}
       />
     ),
