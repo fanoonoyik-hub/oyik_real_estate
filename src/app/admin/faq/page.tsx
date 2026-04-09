@@ -4,8 +4,17 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Plus, Trash2, Edit2, Check, X, Loader2 } from "lucide-react";
 
+interface Faq {
+  id: string;
+  question: string;
+  answer: string;
+  sort_order: number;
+  page_route: string;
+  created_at: string;
+}
+
 export default function AdminFaqPage() {
-  const [faqs, setFaqs] = useState<any[]>([]);
+  const [faqs, setFaqs] = useState<Faq[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   
@@ -39,7 +48,7 @@ export default function AdminFaqPage() {
     setPageRoute("/faq");
   };
 
-  const handleEdit = (faq: any) => {
+  const handleEdit = (faq: Faq) => {
     setEditingId(faq.id);
     setQuestion(faq.question);
     setAnswer(faq.answer);
@@ -80,7 +89,7 @@ export default function AdminFaqPage() {
     if (!acc[route]) acc[route] = [];
     acc[route].push(faq);
     return acc;
-  }, {} as Record<string, any[]>);
+  }, {} as Record<string, Faq[]>);
 
   return (
     <div className="pb-12">

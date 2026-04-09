@@ -1,100 +1,119 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
 import { Mail, MapPin, Phone } from "lucide-react";
 
-const socialLinks = [
-  { 
-    name: "Instagram", 
-    href: "https://www.instagram.com/oyik.realestate.ai/", 
-    icon: (props: any) => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-      </svg>
-    ),
-    color: "hover:text-[#E4405F] hover:bg-[#E4405F]/10 hover:border-[#E4405F]/20"
-  },
-  { 
-    name: "Facebook", 
-    href: "https://www.facebook.com/share/1aPbEdmbCq/?mibextid=wwXIfr", 
-    icon: (props: any) => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-      </svg>
-    ),
-    color: "hover:text-[#1877F2] hover:bg-[#1877F2]/10 hover:border-[#1877F2]/20"
-  },
-  { 
-    name: "LinkedIn", 
-    href: "https://www.linkedin.com/company/oyik-realestate-ai/", 
-    icon: (props: any) => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
-      </svg>
-    ),
-    color: "hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/20"
-  },
-  { 
-    name: "X", 
-    href: "https://x.com/oyik_realestate", 
-    icon: (props: any) => (
-      <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-        <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.49h2.039L6.486 3.24H4.298l13.311 17.403z"/>
-      </svg>
-    ),
-    color: "hover:text-[#000000] hover:bg-[#000000]/10 hover:border-[#000000]/20"
-  },
-  { 
-    name: "YouTube", 
-    href: "https://www.youtube.com/@oyikrealestate", 
-    icon: (props: any) => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.14 1 12 1 12s0 3.86.46 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.86 23 12 23 12s0-3.86-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
-      </svg>
-    ),
-    color: "hover:text-[#FF0000] hover:bg-[#FF0000]/10 hover:border-[#FF0000]/20"
-  },
-  { 
-    name: "Snapchat", 
-    href: "https://www.snapchat.com/@realestate.ai", 
-    icon: ({ size, ...props }: any) => (
-      <img 
-        src="/snapchat-custom.png" 
-        alt="Snapchat icon" 
-        style={{ width: size * 2.2, height: size * 2.2 }}
-        className="object-contain max-w-none"
-        {...props}
-      />
-    ),
-    color: "hover:bg-white/10 hover:border-border/40"
-  },
-];
-
-const serviceLinks = [
-  { name: "AI Chatbots", href: "/services/chat" },
-  { name: "Voice Agents", href: "/services/voice" },
-  { name: "Automated Reminders", href: "/services/reminders" },
-  { name: "Maintenance Intake", href: "/services/maintenance" },
-  { name: "Email Automation", href: "/services/email" },
-  { name: "AI Marketing", href: "/services/ai-marketing" },
-];
-
-const companyLinks = [
-  { name: "About Us", href: "/about" },
-  { name: "How it works", href: "/how-it-works" },
-  { name: "FAQ", href: "/faq" },
-  { name: "Contact", href: "/contact" },
-  { name: "Book Demo", href: "/book-demo" },
-];
-
-const legalLinks = [
-  { name: "Privacy Policy", href: "/privacy" },
-  { name: "Terms of Service", href: "/terms" },
-  { name: "Cookie Policy", href: "/cookies" },
-];
-
 export default function Footer() {
+  const [dynamicLinks, setDynamicLinks] = useState<Record<string, string>>({});
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchSocialLinks() {
+      const { data } = await supabase.from("site_settings").select("*");
+      if (data) {
+        const links = data.reduce((acc: Record<string, string>, item: any) => {
+          acc[item.key] = item.value;
+          return acc;
+        }, {});
+        setDynamicLinks(links);
+      }
+    }
+    fetchSocialLinks();
+  }, [supabase]);
+
+  const socialLinks = [
+    { 
+      name: "Instagram", 
+      href: dynamicLinks.social_instagram || "https://www.instagram.com/oyik.realestate.ai/", 
+      icon: (props: any) => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      ),
+      color: "hover:text-[#E4405F] hover:bg-[#E4405F]/10 hover:border-[#E4405F]/20"
+    },
+    { 
+      name: "Facebook", 
+      href: dynamicLinks.social_facebook || "https://www.facebook.com/share/1aPbEdmbCq/?mibextid=wwXIfr", 
+      icon: (props: any) => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+        </svg>
+      ),
+      color: "hover:text-[#1877F2] hover:bg-[#1877F2]/10 hover:border-[#1877F2]/20"
+    },
+    { 
+      name: "LinkedIn", 
+      href: dynamicLinks.social_linkedin || "https://www.linkedin.com/company/oyik-realestate-ai/", 
+      icon: (props: any) => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+        </svg>
+      ),
+      color: "hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/20"
+    },
+    { 
+      name: "X", 
+      href: dynamicLinks.social_x || "https://x.com/oyik_realestate", 
+      icon: (props: any) => (
+        <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+          <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.49h2.039L6.486 3.24H4.298l13.311 17.403z"/>
+        </svg>
+      ),
+      color: "hover:text-[#000000] hover:bg-[#000000]/10 hover:border-[#000000]/20"
+    },
+    { 
+      name: "YouTube", 
+      href: dynamicLinks.social_youtube || "https://www.youtube.com/@oyikrealestate", 
+      icon: (props: any) => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.14 1 12 1 12s0 3.86.46 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.86 23 12 23 12s0-3.86-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
+        </svg>
+      ),
+      color: "hover:text-[#FF0000] hover:bg-[#FF0000]/10 hover:border-[#FF0000]/20"
+    },
+    { 
+      name: "Snapchat", 
+      href: dynamicLinks.social_snapchat || "https://www.snapchat.com/@realestate.ai", 
+      icon: ({ size, ...props }: any) => (
+        <img 
+          src="/snapchat-custom.png" 
+          alt="Snapchat icon" 
+          style={{ width: size * 2.2, height: size * 2.2 }}
+          className="object-contain max-w-none"
+          {...props}
+        />
+      ),
+      color: "hover:bg-white/10 hover:border-border/40"
+    },
+  ];
+
+  const serviceLinks = [
+    { name: "AI Chatbots", href: "/services/chat" },
+    { name: "Voice Agents", href: "/services/voice" },
+    { name: "Automated Reminders", href: "/services/reminders" },
+    { name: "Maintenance Intake", href: "/services/maintenance" },
+    { name: "Email Automation", href: "/services/email" },
+    { name: "AI Marketing", href: "/services/ai-marketing" },
+  ];
+
+  const companyLinks = [
+    { name: "About Us", href: "/about" },
+    { name: "How it works", href: "/how-it-works" },
+    { name: "FAQ", href: "/faq" },
+    { name: "Contact", href: "/contact" },
+    { name: "Book Demo", href: "/book-demo" },
+  ];
+
+  const legalLinks = [
+    { name: "Privacy Policy", href: "/privacy" },
+    { name: "Terms of Service", href: "/terms" },
+    { name: "Cookie Policy", href: "/cookies" },
+  ];
+
   return (
     <footer className="relative overflow-hidden border-t border-border bg-secondary pb-8 pt-16">
       <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />

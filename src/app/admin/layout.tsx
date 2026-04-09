@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, FileText, Users, HelpCircle, LogOut } from "lucide-react";
+import { LayoutDashboard, FileText, Users, HelpCircle, LogOut, Settings } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const navigation = [
@@ -10,6 +10,7 @@ const navigation = [
   { name: "Blogs", href: "/admin/blogs", icon: FileText },
   { name: "Contacts", href: "/admin/contacts", icon: Users },
   { name: "FAQs", href: "/admin/faq", icon: HelpCircle },
+  { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
