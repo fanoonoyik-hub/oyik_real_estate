@@ -67,7 +67,7 @@ export default function AdminFaqPage() {
       page_route: pageRoute,
     };
 
-    if (editingId) {
+    if (editingId && editingId !== "new") {
       await supabase.from("faqs").update(payload).eq("id", editingId);
     } else {
       await supabase.from("faqs").insert([payload]);
