@@ -30,7 +30,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!post) return { title: "Post Not Found" };
 
   return {
-    title: `${post.title} | Oyik Journal`,
+    title: {
+      absolute: post.title
+    },
     description: post.description,
   };
 }
