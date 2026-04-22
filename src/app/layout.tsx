@@ -3,6 +3,7 @@ import { Roboto, Urbanist } from "next/font/google";
 import AppShell from "@/components/shared/AppShell";
 import "@n8n/chat/dist/style.css";
 import "./globals.css";
+import Script from "next/script";
 
 const fontSans = Roboto({
   variable: "--font-sans",
@@ -116,6 +117,7 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-background font-sans text-foreground">
         <AppShell>{children}</AppShell>
+        <Script src="/chatbot.js" strategy="lazyOnload" />
       </body>
     </html>
   );
