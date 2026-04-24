@@ -113,6 +113,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <meta name="google-site-verification" content="iG4MsXnd6nBL_s7Z3DEJZ_Rz67imbAL-eVYmBmHXpVg" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-background font-sans text-foreground">
